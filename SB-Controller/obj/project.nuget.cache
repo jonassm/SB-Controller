@@ -1,11 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "YbLCJKKGVUM=",
+  "dgSpecHash": "fGYtibta8N8=",
   "success": true,
   "projectFilePath": "/home/jonassm/Development/SB-Controller/SB-Controller/SB-Controller.csproj",
   "expectedPackageFiles": [
-    "/home/jonassm/.nuget/packages/microsoft.aspnetcore.app.internal.assets/10.0.14/microsoft.aspnetcore.app.internal.assets.10.0.14.nupkg.sha512",
-    "/home/jonassm/.nuget/packages/microsoft.aspnetcore.app.ref/10.0.14/microsoft.aspnetcore.app.ref.10.0.14.nupkg.sha512"
+    "/home/jonassm/.nuget/packages/microsoft.aspnetcore.app.internal.assets/10.0.14/microsoft.aspnetcore.app.internal.assets.10.0.14.nupkg.sha512"
   ],
   "logs": []
 }
