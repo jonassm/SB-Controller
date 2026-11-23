@@ -1,0 +1,81 @@
+@page "/debug/api"
+@rendermode InteractiveServer
+
+<PageTitle>API Debug</PageTitle>
+
+<h1>API Debug</h1>
+
+<div class="row g-4 mt-1">
+    <div class="col-12 col-xl-6">
+        <fieldset disabled="@isSending">
+            <legend class="visually-hidden">API requests</legend>
+
+            <form class="border rounded p-3 mb-3" @onsubmit="LoginAsync" @onsubmit:preventDefault>
+                <h2 class="h5">Login</h2>
+                <label class="form-label" for="debug-username">Username</label>
+                <div class="input-group">
+                    <input class="form-control" id="debug-username" @bind="username" />
+                    <button class="btn btn-primary" type="submit">Log in</button>
+                </div>
+            </form>
+
+            <section class="border rounded p-3 mb-3" aria-labelledby="debug-items-heading">
+                <h2 class="h5" id="debug-items-heading">Items</h2>
+                <button class="btn btn-outline-primary" type="button" @onclick="ListItemsAsync">List items</button>
+            </section>
+
+            <form class="border rounded p-3 mb-3" @onsubmit="AddItemAsync" @onsubmit:preventDefault>
+                <h2 class="h5">Add item</h2>
+                <div class="mb-3">
+                    <label class="form-label" for="debug-item-name">Name</label>
+                    <input class="form-control" id="debug-item-name" @bind="itemName" />
+                </div>
+                <div class="row g-3 mb-3">
+                    <div class="col-sm-7">
+                        <label class="form-label" for="debug-category">Category</label>
+                        <input class="form-control" id="debug-category" @bind="category" />
+                    </div>
+                    <div class="col-sm-5">
+                        <label class="form-label" for="debug-price">Price</label>
+                        <input class="form-control" id="debug-price" type="number" @bind="price" />
+                    </div>
+                </div>
+                <button class="btn btn-primary" type="submit">Add item</button>
+            </form>
+
+            <form class="border rounded p-3" @onsubmit="DeleteItemAsync" @onsubmit:preventDefault>
+                <h2 class="h5">Delete item</h2>
+                <label class="form-label" for="debug-delete-name">Item name</label>
+                <div class="input-group">
+                    <input class="form-control" id="debug-delete-name" @bind="deleteName" />
+                    <button class="btn btn-outline-danger" type="submit">Delete item</button>
+                </div>
+            </form>
+        </fieldset>
+    </div>
+
+    <div class="col-12 col-xl-6">
+        <section class="border rounded p-3" aria-labelledby="debug-response-heading">
+            <h2 class="h5" id="debug-response-heading">Response</h2>
+            <div aria-live="polite">
+                @if (requestLine is not null)
+                {
+                    <p class="mb-2 text-break"><code>@requestLine</code></p>
+                }
+                @if (isSending)
+                {
+                    <p class="mb-0">Waiting for response…</p>
+                }
+                else if (responseStatus is not null)
+                {
+                    <p class="fw-semibold mb-2">@responseStatus</p>
+                    <pre class="bg-light border rounded p-3 mb-0 overflow-auto">@responseBody</pre>
+                }
+                else
+                {
+                    <p class="text-body-secondary mb-0">Send a request to see its status and body.</p>
+                }
+            </div>
+        </section>
+    </div>
+</div>

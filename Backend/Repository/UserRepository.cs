@@ -2,7 +2,7 @@ using Backend.Repository.Interfaces;
 using Core;
 using MongoDB.Driver;
 
-namespace Backend.Repositories;
+namespace Backend.Repository;
 
 public class UserRepository : IUserRepo
 {

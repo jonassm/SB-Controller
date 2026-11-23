@@ -1,4 +1,4 @@
-using Backend.Repositories;
+using Backend.Repository;
 using Backend.Repository.Interfaces;
 using DotNetEnv;
 Env.Load();
@@ -24,6 +24,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddSingleton<IUserRepo, UserRepository>();
+builder.Services.AddSingleton<IItemRepo, ItemRepository>();
 //Modul 15 note. Vi laver et repo objekt serveren bruger.
 
 
