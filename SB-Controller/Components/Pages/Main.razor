@@ -1,0 +1,43 @@
+﻿@page "/Main"
+@using Core
+@inject Core.Item
+@rendermode InteractiveServer
+
+<h3>Main</h3>
+
+@code {
+    
+    private List<Item> items = new List<Item>();
+    private List<Item> currentItems = new List<Item>();
+    private string startCategory = "alle"; //start med alle i kategorien
+    string? searchedWord = ""; 
+    
+    
+    private void ApplyFilters()
+    {
+        //JEG ELSKER BOOLSK ALGEBRA!!!
+        currentItems = items.Where(a => 
+                (startCategory == "alle" || a.category == startCategory)
+        ).ToList();//tilføj til listen som er current vi har i linje 73
+    }
+    
+    
+    private void Contains()
+    {
+        if (string.IsNullOrEmpty(searchedWord) || items == null) return;
+        
+        // Goes through each words from the file and adds words to the new result-array
+        List<Item> foundItems = new List<Item>();
+        for (int i = 0; i < items.Count; i++)
+        {
+            if (items[i].name.Contains(searchedWord))    // If the word from the file contains the users searched word
+            {
+                foundItems.Add(items[i]);
+            }
+        }
+        currentItems = foundItems;
+        
+        // SearchType = "Contains";                // SearchType changes to "Contains"
+    }
+    
+}
