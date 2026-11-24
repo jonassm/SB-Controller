@@ -26,4 +26,9 @@ public class UserRepository : IUserRepo
         //lav et filter, filter efter username.
         //vi tjekker kun for usnermae ved login, dvs. kodeord er null.
     }
+    
+    public void AddUser(User newUser)
+    {
+        _userRepository.InsertOne(newUser);
+    }
 }

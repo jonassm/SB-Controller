@@ -1,0 +1,47 @@
+﻿@page "/CreateBartender"
+@using Core
+@inject Core.User
+@rendermode InteractiveServer
+@inject HttpClient Http
+@inject NavigationManager nav
+
+<h3>CreateBartender</h3>
+
+
+<EditForm Model="@newUser" OnValidSubmit="@CreateBartender" class="row p-3">
+    
+    <div class="col-md-12 mb-3">
+        <label for="username">Username</label>
+        <InputText id="username" @bind-Value="newUser.username" class="form-control" required/>
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label for="password">Password</label>
+        <InputNumber id="password" @bind-Value="newUser.password" class="form-control" min="0" required/>
+    </div>
+    
+</EditForm>
+
+
+
+@code {
+
+    private User newUser = new User
+    {
+        username = "",
+        password = "",
+        role = "default"
+    };
+
+    private async Task CreateBartender()
+    {
+        
+        var response = await Http.PostAsJsonAsync("api/user/add", newUser);
+
+        if (response.IsSuccessStatusCode) //hvis response er 200, så..
+        {
+            nav.NavigateTo("/User"); //tilbage til User når annoncen er oprettet
+        }
+    }
+    
+}

@@ -25,4 +25,17 @@ public class UserController : ControllerBase
         //Vi er altså også ligeglad med password lige nu, da alle er null.
         return uRepo.Login(username);
     }
+    
+    [HttpPost]
+    [Route("add")]
+    public void AddUser(User newUser)
+    {
+        uRepo.AddUser(newUser); //Add er også repo funktion
+    }
+    
+    /* SKAL LAVES:
+     * Vi skal få amount ind når vi laver et Item, så vi kan ændre direkte i storage når vi tilføjer et produkt.
+     * Dvs. hvis en admin laver et produkt fordi der er kommet en kasse med 24 ind, skal de kunne ændr mængden direkte
+     * i storage og ikke først ind og redigere i det.
+     */
 }
