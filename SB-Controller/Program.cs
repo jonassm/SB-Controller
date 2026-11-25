@@ -1,4 +1,6 @@
 using SB_Controller.Components;
+using Core;
+using Blazored.LocalStorage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +12,12 @@ builder.Services.AddHttpClient("ApiDebug", client =>
     client.BaseAddress = new Uri(builder.Configuration["ApiDebug:BaseUrl"] ?? "http://localhost:5062");
 });
 
+builder.Services.AddSingleton(_ => new HttpClient
+{//Lavet af chatten, men samme type kode som vi benytter i program.cs ved backend. Kunne ikke finde dokumentation i vores lektioner.
+    BaseAddress = new Uri("http://localhost:5062/")
+});
 
+builder.Services.AddBlazoredLocalStorage(); //local storage
 
 var app = builder.Build();
 

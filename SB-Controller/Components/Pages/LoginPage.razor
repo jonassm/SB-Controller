@@ -43,7 +43,8 @@
     public async Task CheckUsername()
     {
         // null er til sidst, fordi postasync skal bruge to argumenter, men vi bruger kun en
-        var response = await Http.PostAsync($"api/user/login{loginForm.username}", null);
+        Console.WriteLine(loginForm.username);
+        var response = await Http.PostAsync($"api/user/login/{loginForm.username}", null);
         
         if (response.IsSuccessStatusCode) //hvis vi får status 200
         {
@@ -54,7 +55,7 @@
             
             // I user objektet, som defineret i user.cs, ligger vores username
             await LocStore.SetItemAsync<string>("username", user.username);
-            nav.NavigateTo("/");
+            nav.NavigateTo("/debug/api");
             
         }
     }
