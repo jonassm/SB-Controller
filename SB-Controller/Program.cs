@@ -14,7 +14,7 @@ builder.Services.AddHttpClient("ApiDebug", client =>
 
 builder.Services.AddSingleton(_ => new HttpClient
 {//Lavet af chatten, men samme type kode som vi benytter i program.cs ved backend. Kunne ikke finde dokumentation i vores lektioner.
-    BaseAddress = new Uri("http://localhost:5046/")
+    BaseAddress = new Uri("http://localhost:5062/")
 });
 
 builder.Services.AddBlazoredLocalStorage(); //local storage
