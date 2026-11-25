@@ -1,0 +1,61 @@
+﻿@page "/LoginPage"
+@using Core
+@rendermode InteractiveServer
+@inject HttpClient Http
+@inject NavigationManager nav
+@inject Blazored.LocalStorage.ILocalStorageService LocStore
+
+<h3>LoginPage</h3>
+
+<div class="login">
+    <EditForm Model="loginForm" OnValidSubmit="CheckUsername">
+        
+        <!-- Her skriver man username -->
+        <div class="form-floating-group">
+            <InputText @bind-Value="loginForm.username" placeholder="Username"></InputText>
+        </div>
+        
+        <!-- Her skriver man userpassword -->
+        <!-- Password er ligegyldigt for nu -->
+        <div class="form-floating-group">
+            <InputText @bind-Value="loginForm.password" placeholder="Password"></InputText>
+        </div>
+        
+        <!-- Submit/login knappen -->
+        <div>
+            <button type="submit" class="btn btn-primary">Login</button>
+        </div>
+        
+    </EditForm>
+</div>
+
+
+@code {
+
+    private User loginForm = new()
+    {
+        username = "",
+        password = ""
+    };
+
+
+    // Checker om password findes i databasen og derved kan logge ind
+    public async Task CheckUsername()
+    {
+        // null er til sidst, fordi postasync skal bruge to argumenter, men vi bruger kun en
+        var response = await Http.PostAsync($"api/user/login{loginForm.username}", null);
+        
+        if (response.IsSuccessStatusCode) //hvis vi får status 200
+        {
+            // Når vi får 200 responsen, sender mongo hele user objektet til os (response.content)
+            var user = await response.Content.ReadFromJsonAsync<Core.User>();
+            
+            // Onde tunger vil mene man skal lave if null statements her, men vi går ud fra det ikke er fucked op
+            
+            // I user objektet, som defineret i user.cs, ligger vores username
+            await LocStore.SetItemAsync<string>("username", user.username);
+            nav.NavigateTo("/");
+            
+        }
+    }
+}
