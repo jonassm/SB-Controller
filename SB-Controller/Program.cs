@@ -10,6 +10,8 @@ builder.Services.AddHttpClient("ApiDebug", client =>
     client.BaseAddress = new Uri(builder.Configuration["ApiDebug:BaseUrl"] ?? "http://localhost:5062");
 });
 
+
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
