@@ -23,6 +23,8 @@ public class ItemRepository : IItemRepo
     public List<Item> GetAllItems()
     {
         return _itemRepository.Find(_ => true).ToList();
+        // _ er en expression der gør at alle items vil returner true, dvs. vi får alt ud.
+        //det svarer til db.items.find({}) i mongo shell
     }
     public void AddItem(Item item)
     {
@@ -31,7 +33,7 @@ public class ItemRepository : IItemRepo
     
     public void DeleteItem(string name)
     {
-        var filter = Builders<Item>.Filter.Eq(i => i.name, name);
+        var filter = Builders<Item>.Filter.Eq(i => i.name, name); //find den specfikke item med det navn
         _itemRepository.DeleteOne(filter);
         //slet den
     }

@@ -30,12 +30,6 @@ public class UserController : ControllerBase
     [Route("add")]
     public void AddUser(User newUser)
     {
-        uRepo.AddUser(newUser); //Add er også repo funktion
+        uRepo.AddUser(newUser);
     }
-    
-    /* SKAL LAVES:
-     * Vi skal få amount ind når vi laver et Item, så vi kan ændre direkte i storage når vi tilføjer et produkt.
-     * Dvs. hvis en admin laver et produkt fordi der er kommet en kasse med 24 ind, skal de kunne ændr mængden direkte
-     * i storage og ikke først ind og redigere i det.
-     */
 }
