@@ -16,9 +16,11 @@
 
     <div class="col-md-6 mb-3">
         <label for="password">Password</label>
-        <InputNumber id="password" @bind-Value="newUser.password" class="form-control" min="0" required/>
+        <InputText id="password" @bind-Value="newUser.password" class="form-control" min="0" required/>
     </div>
-    
+    <div>
+        <button type="submit" class="btn btn-primary">Submit new user</button>
+    </div>
 </EditForm>
 
 
@@ -39,7 +41,7 @@
 
         if (response.IsSuccessStatusCode) //hvis response er 200, så..
         {
-            nav.NavigateTo("/User"); //tilbage til User når annoncen er oprettet
+            nav.NavigateTo("/Main"); //tilbage til User når annoncen er oprettet
         }
     }
     

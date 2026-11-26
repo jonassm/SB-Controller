@@ -6,23 +6,29 @@
 
 <h3>CreateItem</h3>
 
-<EditForm Model="@aItem" OnValidSubmit="@CreateItem" class="row p-3">
+<EditForm Model="@newItem" OnValidSubmit="@CreateItem" class="row p-3">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
     <div class="col-md-12 mb-3">
         <label for="Name">Navn</label>
-        <InputText id="Name" @bind-Value="aItem.name" class="form-control" required />
+        <InputText id="Name" @bind-Value="newItem.name" class="form-control" required />
     </div>
 
     <div class="col-md-6 mb-3">
         <label for="Pris">Pris</label>
-        <InputNumber id="Pris" @bind-Value="aItem.price" class="form-control" min="0" required />
+        <InputNumber id="Pris" @bind-Value="newItem.price" class="form-control" min="0" required />
     </div>
 
     <div class="col-md-6 mb-3">
-        <label for="Kategori">Kategori</label>
-        <InputText id="Kategori" @bind-Value="aItem.category" class="form-control" required />
+        <label for="category">Kategori</label>
+        <InputSelect id="category" @bind-Value="newItem.category" class="form-select" required>
+            <option value="">Vælg kategori</option>
+            @foreach (var category in Item.categories)
+            {
+                <option value="@category">@category</option>
+            }
+        </InputSelect>
     </div>
 
     @if (fejl != null)
@@ -38,17 +44,18 @@
 
 @code {
     //Strings starter tomme, så de ikke er null.
-    private Item aItem = new Item
+    private Item newItem = new Item
     {
         name = "",
-        category = ""
+        category = "",
+        price = 0
     };
 
     private string? fejl;
 
     private async Task CreateItem() // vi laver et item
     {
-        var response = await Http.PostAsJsonAsync("api/item/add", aItem);
+        var response = await Http.PostAsJsonAsync("api/item/add", newItem);
 
         if (response.IsSuccessStatusCode) //hvis response er 200, så..
         {
