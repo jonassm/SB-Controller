@@ -1,0 +1,81 @@
+@page "/CreateUser"
+@using Core;
+@rendermode InteractiveServer
+@inject HttpClient Http
+@inject NavigationManager nav
+
+<h3>CreateUser</h3>
+
+<EditForm Model="@aUser" OnValidSubmit="@CreateUser" class="row p-3">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="col-md-12 mb-3">
+        <label for="Username">Brugernavn</label>
+        <InputText id="Username" @bind-Value="aUser.username" class="form-control" required />
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label for="Password">Password (valgfri)</label>
+        <InputText id="Password" type="password" @bind-Value="aUser.password" class="form-control" />
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label for="Role">Rolle</label>
+        <InputSelect id="Role" @bind-Value="aUser.role" class="form-control" required>
+            <option value="">-- Vælg rolle --</option>
+            @foreach (var role in roller)
+            {
+                <option value="@role">@role</option>
+            }
+        </InputSelect>
+    </div>
+
+    @if (fejl != null)
+    {
+        <p class="text-danger">@fejl</p>
+    }
+
+    <div class="col-12 mb-3">
+        <button type="submit" class="btn btn-primary">Opret</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancel">Annuller</button>
+    </div>
+</EditForm>
+
+@code {
+    //Samme værdier som i databasen.
+    private readonly string[] roller = { "admin", "default" };
+
+    //Strings starter tomme, da User ikke tillader null i dem.
+    private User aUser = new User
+    {
+        username = "",
+        role = ""
+    };
+
+    private string? fejl;
+
+    private async Task CreateUser() // vi laver en user
+    {
+        if (string.IsNullOrWhiteSpace(aUser.password)) //Hvis password er null, tom eller bare whitespace (dvs space) ændres det til null.
+        {
+            aUser.password = null; //intet password = null, som i databasen
+        }
+
+        var response = await Http.PostAsJsonAsync("api/user/add", aUser);
+
+        if (response.IsSuccessStatusCode) //hvis response er 200, så..
+        {
+            nav.NavigateTo("/Main"); //tilbage til Main når brugeren er oprettet
+        }
+        else
+        {
+            fejl = "Brugeren kunne ikke oprettes. Prøv igen.";
+        }
+    }
+
+    private void Cancel()
+    {
+        nav.NavigateTo("/Main");
+    }
+}

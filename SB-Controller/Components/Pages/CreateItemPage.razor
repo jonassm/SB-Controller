@@ -1,0 +1,67 @@
+@page "/CreateItem"
+@using Core;
+@rendermode InteractiveServer
+@inject HttpClient Http
+@inject NavigationManager nav
+
+<h3>CreateItem</h3>
+
+<EditForm Model="@aItem" OnValidSubmit="@CreateItem" class="row p-3">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="col-md-12 mb-3">
+        <label for="Name">Navn</label>
+        <InputText id="Name" @bind-Value="aItem.name" class="form-control" required />
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label for="Pris">Pris</label>
+        <InputNumber id="Pris" @bind-Value="aItem.price" class="form-control" min="0" required />
+    </div>
+
+    <div class="col-md-6 mb-3">
+        <label for="Kategori">Kategori</label>
+        <InputText id="Kategori" @bind-Value="aItem.category" class="form-control" required />
+    </div>
+
+    @if (fejl != null)
+    {
+        <p class="text-danger">@fejl</p>
+    }
+
+    <div class="col-12 mb-3">
+        <button type="submit" class="btn btn-primary">Opret</button>
+        <button type="button" class="btn btn-secondary" @onclick="Cancel">Annuller</button>
+    </div>
+</EditForm>
+
+@code {
+    //Strings starter tomme, så de ikke er null.
+    private Item aItem = new Item
+    {
+        name = "",
+        category = ""
+    };
+
+    private string? fejl;
+
+    private async Task CreateItem() // vi laver et item
+    {
+        var response = await Http.PostAsJsonAsync("api/item/add", aItem);
+
+        if (response.IsSuccessStatusCode) //hvis response er 200, så..
+        {
+            nav.NavigateTo("/Main"); //tilbage til Main når item er oprettet
+        }
+        else
+        {
+            fejl = "Item kunne ikke oprettes. Prøv igen.";
+        }
+    }
+
+    private void Cancel()
+    {
+        nav.NavigateTo("/Main");
+    }
+}
