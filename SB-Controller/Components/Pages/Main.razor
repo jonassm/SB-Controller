@@ -1,42 +1,95 @@
 ﻿@page "/Main"
 @using Core
 @rendermode InteractiveServer
+@inject HttpClient Http
 
 <h3>Main</h3>
 
+<select name="category" @bind="searchedCategory" @bind:after="ApplyFilters">
+    <option value="alle">Alle</option> <!--      bind after kalder funktionen når vi ændrer kategorien-->
+    @foreach (var category in Item.categories)
+    { //Load vores hardcoded kategorier fra Item.cs ind.
+        <option value="@category">@category</option>
+    }
+</select>
+<input @bind="searchedWord" @bind:after="ApplyFilters" placeholder="Søg..."/>
+
+
+@if (getting) //hvis vi bare laver null tjek på annoncer, vil det aldrig blive skrevet.
+    //da items objektet dannes med det samme, og altså ikke er null
+{
+    <p>Henter...</p>
+}
+else
+{
+    <div class="liste">
+        @foreach (var i in currentItems)
+        {
+            <div>
+                <div class="itemNavn">@i.name</div></div>
+        }
+    </div>
+}
+
+
+
+
+
 @code {
     
+    //precons
     private List<Item> items = new List<Item>();
     private List<Item> currentItems = new List<Item>();
-    private string startCategory = "alle"; //start med alle i kategorien
-    string? searchedWord = ""; 
-      
+    private string searchedCategory = "alle"; //start med alle i søge kategorien så vi ikke filtrer noget.
+    string? searchedWord = "";
+    bool getting;
+    
+    //stuff
+    
+    private async Task loadItems() // til at loade items via HTTP til controller.
+    {
+        items = await Http.GetFromJsonAsync<List<Item>>("api/item/get") 
+                ?? new List<Item>(); //null check - så crasher siden ikke hvis der ikke er noget fra http.
+        
+        getting = false; //nu har vi hentet, så...
+        currentItems = items; //sæt currentitems(viste) til items(alle).
+    }
+
+    protected override async Task OnInitializedAsync() //ved init kalder vi load items.
+    {
+        await loadItems();
+    }
+
+    
+    //Blev nød til at implemtere for ikke at crashe ved setup. Hvis ikke det vi brugte i undervisning.
+    //men er, som man kan regne ud med navnet, noget der kører ved den første render.
+    //det benytter vi til at tjekke hvad vi har til dette køb so far.
+    /*
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var savedCart = await LocStore.GetItemAsync<List<Annonce>>("cart");
+            if (savedCart != null)
+                Cart.cart = savedCart;
+
+            StateHasChanged(); 
+        }
+    }
+    */
+    
+    
     
     private void ApplyFilters()
     {
-        //JEG ELSKER BOOLSK ALGEBRA!!!
-        currentItems = items.Where(a => 
-                (startCategory == "alle" || a.category == startCategory)
-        ).ToList();//tilføj til listen som er current vi har i linje 73
+        //items listen er defineret ud fra oninit fra databasen. currentItems er den nye liste vi populere.
+        currentItems = items.Where(item =>
+            (searchedCategory == "alle" || item.category == searchedCategory)
+            //filtrer alle ELLER x kategori.
+            &&                                                                         //ignorer upper/lower
+            (string.IsNullOrEmpty(searchedWord) || item.name.Contains(searchedWord, StringComparison.CurrentCultureIgnoreCase))
+            //filtrer alle(searchedWord er null) ELLER x string.
+        ).ToList();
+        //to list gemmer det i vores liste.
     }
-    
-    
-    private void Contains()
-    {
-        if (string.IsNullOrEmpty(searchedWord) || items == null) return;
-        
-        // Goes through each words from the file and adds words to the new result-array
-        List<Item> foundItems = new List<Item>();
-        for (int i = 0; i < items.Count; i++)
-        {
-            if (items[i].name.Contains(searchedWord))    // If the word from the file contains the users searched word
-            {
-                foundItems.Add(items[i]);
-            }
-        }
-        currentItems = foundItems;
-        
-        // SearchType = "Contains";                // SearchType changes to "Contains"
-    }
-    
 }
